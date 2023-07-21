@@ -3,8 +3,8 @@ name: Build and Deploy for PROJECT_NAME to AWS EC2
 # Event Trigger
 on:
   push:
-      # master(main) branch 기준으로 동작
       branches: [ main ]
+      # master(main) branch 기준으로 동작
       # PR도 반영되게 할 거라면 아래 부분 주석 해제
 #  pull_request:
 #    branches: [ main ]
