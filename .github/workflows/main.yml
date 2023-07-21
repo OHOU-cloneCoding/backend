@@ -1,0 +1,32 @@
+name: Build and Deploy for PROJECT_NAME to AWS EC2
+
+# Event Trigger
+on:
+  push:
+  	# master(main) branch 기준으로 동작
+    branches: [ main ]
+    # PR도 반영되게 할 거라면 아래 부분 주석 해제
+#  pull_request:
+#    branches: [ main ]
+
+jobs:
+  build:
+    # 실행 환경 지정
+    runs-on: ubuntu-latest
+
+    # Task의 sequence 명시
+    steps:
+    - uses: actions/checkout@v2
+    
+    # JAVA 버전은 프로젝트에 맞게 설정
+    - name: Set up JDK 17
+      uses: actions/setup-java@v1
+      with:
+        java-version: 17
+    
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    
+    # Gradle build (Test 제외)
+    - name: Build with Gradle
+      run: ./gradlew clean build -x test
