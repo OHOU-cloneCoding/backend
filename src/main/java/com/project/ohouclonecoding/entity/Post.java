@@ -4,12 +4,14 @@ import com.project.ohouclonecoding.dto.PostRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor
 public class Post {
@@ -35,11 +37,13 @@ public class Post {
     private User user;
 
 
-    public Post(String nickname, String content, String storedPostName) {
+    public Post(User user, String nickname, String content, String storedPostName) {
+        this.user = user;
         this.nickname = nickname;
         this.content = content;
         this.postImg = storedPostName;
     }
+
 
     public void update(PostRequestDto requestDto) {
         this.content = requestDto.getContent();

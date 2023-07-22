@@ -6,11 +6,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 public class PostRequestDto {
-    private String nickname;
     private String content;
+    private String postImg;
 
-    public PostRequestDto(String nickname, String content){
-        this.nickname = nickname;
+
+
+    public PostRequestDto(String content, String postImg){
         this.content = content;
+        this.postImg = postImg;
     }
 }
