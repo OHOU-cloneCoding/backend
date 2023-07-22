@@ -35,8 +35,8 @@ public class Post {
     private User user;
 
 
-    public Post(String nickname, String content, String storedPostName) {
-        this.nickname = nickname;
+    public Post(User user, String content, String storedPostName) {
+        this.user = user;
         this.content = content;
         this.postImg = storedPostName;
     }

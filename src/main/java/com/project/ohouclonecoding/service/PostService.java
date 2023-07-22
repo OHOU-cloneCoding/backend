@@ -5,6 +5,8 @@ import com.project.ohouclonecoding.dto.PostResponseDto;
 import com.project.ohouclonecoding.entity.Post;
 import com.project.ohouclonecoding.entity.User;
 import com.project.ohouclonecoding.repository.PostRepository;
+import com.project.ohouclonecoding.repository.UserRepository;
+import com.project.ohouclonecoding.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -14,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,15 +26,23 @@ public class PostService {
     @Qualifier(value = "postS3ImageService")
     private final ImageMangerService postS3Service;
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
     //게시글 생성
     @Transactional
-    public PostResponseDto createPost(PostRequestDto requestDto, MultipartFile postImg) throws IOException {
+    public PostResponseDto createPost(PostRequestDto requestDto, MultipartFile postImg, UserDetailsImpl userDetails) throws IOException {
+
+//        String nickname = userDetails.getUser().getNickname();
+//        User finduser = userRepository.findByNickname(nickname).orElseThrow(
+//                () -> new IllegalArgumentException("존재하지 않는 닉네임입니다.")
+//        );
+            User user = userDetails.getUser();
+
         //S3 이미지 저장
         String storedPostName = postS3Service.uploadImageFile(postImg);
 
         try {
-            Post savedPost = postRepository.save(new Post(requestDto.getNickname(), requestDto.getContent(), storedPostName));
+            Post savedPost = postRepository.save(new Post(user ,requestDto.getContent(), storedPostName));
             return new PostResponseDto(savedPost);
         } catch (IllegalArgumentException | OptimisticLockingFailureException e) {
             throw new IllegalArgumentException("저장에 실패하였습니다");

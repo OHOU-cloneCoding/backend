@@ -4,9 +4,11 @@ package com.project.ohouclonecoding.controller;
 import com.project.ohouclonecoding.dto.PostRequestDto;
 import com.project.ohouclonecoding.dto.PostResponseDto;
 import com.project.ohouclonecoding.entity.User;
+import com.project.ohouclonecoding.security.UserDetailsImpl;
 import com.project.ohouclonecoding.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,10 +26,10 @@ public class PostController {
     @PostMapping("")
     public PostResponseDto createPost(
             @RequestPart PostRequestDto postRequestDto,
-            @RequestPart("postImg") MultipartFile postImg
-
-    ) throws IOException {
-        return postService.createPost(postRequestDto,postImg);
+            @RequestPart("postImg") MultipartFile postImg,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+            ) throws IOException {
+        return postService.createPost(postRequestDto,postImg,userDetails);
     }
 
     //게시글 전체 조회(home - 페이징 8개)
@@ -55,7 +57,11 @@ public class PostController {
                                       @RequestBody PostRequestDto requestDto,
                                       HttpServletRequest request){
         User user = (User)request.getAttribute("user");
-        postService.updatePost(postId, requestDto, user);
+        try {
+            postService.updatePost(postId, requestDto, user);
+        }catch (Exception e){
+           return(e.getMessage());
+        }
 
         return "게시글 수정 성공";
     }
