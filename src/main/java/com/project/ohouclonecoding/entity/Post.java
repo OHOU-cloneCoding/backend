@@ -1,12 +1,15 @@
 package com.project.ohouclonecoding.entity;
 
+import com.project.ohouclonecoding.dto.PostRequestDto;
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Entity
 @NoArgsConstructor
 public class Post {
@@ -14,6 +17,9 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private long postId;
+
+    @Column(nullable = false)
+    private String nickname;
 
     @Column(nullable = false, length = 500)
     private String content;
@@ -28,4 +34,14 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User user;
 
+
+    public Post(String nickname, String content, String storedPostName) {
+        this.nickname = nickname;
+        this.content = content;
+        this.postImg = storedPostName;
+    }
+
+    public void update(PostRequestDto requestDto) {
+        this.content = requestDto.getContent();
+    }
 }
