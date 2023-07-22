@@ -21,20 +21,15 @@ import java.util.Optional;
 
 @Slf4j(topic = "JwtUtil")
 @Component
-@RequiredArgsConstructor
 public class JwtUtil {
     // Header KEY 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
     // 사용자 권한 값의 KEY
     public static final String AUTHORIZATION_KEY = "auth";
-    public static final String ACCESS_HEADER = "Access";
-    public static final String REFRESH_HEADER = "Refresh";
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
     // 토큰 만료시간
     private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
-
-    private final RefreshTokenRepository refreshTokenRepository;
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey
     private String secretKey;
@@ -49,35 +44,24 @@ public class JwtUtil {
     }
 
     // 토큰 생성
-    public TokenDto createAll(String nickname, UserRoleEnum role){
-        return new TokenDto(createToken(nickname,role,"Access"), createToken(nickname,role,"Refresh"));
-    }
-    public String createToken(String nickname, UserRoleEnum role, String type) {
+    public String createToken(String nickname, UserRoleEnum role) {
         Date date = new Date();
-        long time = type.equals("Access") ? 5 * 60 * 1000L : 30 * 60 * 100L;
 
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(nickname) // 사용자 식별자값(ID)
                         .claim(AUTHORIZATION_KEY, role) // 사용자 권한
-                        .setExpiration(new Date(date.getTime() + time)) // 만료 시간
+                        .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
                         .compact();
     }
 
     // header 에서 JWT 가져오기
-    public String getJwtFromHeader(HttpServletRequest request, String type) {
-        if (type.equals("Access")) {
-            String bearerToken = request.getHeader(ACCESS_HEADER);
-            if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-                return bearerToken.substring(7);
-            }
-        }else {
-            String bearerToken = request.getHeader(REFRESH_HEADER);
-            if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-                return bearerToken.substring(7);
-            }
+    public String getJwtFromHeader(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(7);
         }
         return null;
     }
@@ -98,28 +82,10 @@ public class JwtUtil {
         }
         return false;
     }
-    public Boolean refreshTokenValidation(String token) {
-        // 1차 토큰 검증
-        if(!validateToken(token)) return false;
-        String nickname = getUserInfoFromToken(token).getSubject();
-        System.out.println("nickname = " + nickname);
-        // DB에 저장한 토큰 비교
-        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByNickname(nickname);
-        System.out.println("refreshToken = " + refreshToken.isPresent());
-        if(refreshToken.isPresent()){
-            System.out.println("token = " + token);
-            System.out.println("refreshToken = " + refreshToken.get());
-            System.out.println("refreshToken.get().getRefreshToken() = " + refreshToken.get().getRefreshToken());
-        }
-        return refreshToken.isPresent() && token.equals(refreshToken.get().getRefreshToken().substring(7));
-    }
 
     // 토큰에서 사용자 정보 가져오기
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-    }
-    public String getNicknameFromToken(String token){
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.project.ohouclonecoding.configure;
 
 import com.project.ohouclonecoding.jwt.JwtUtil;
+import com.project.ohouclonecoding.repository.RefreshTokenRepository;
 import com.project.ohouclonecoding.repository.UserRepository;
 import com.project.ohouclonecoding.security.JwtAuthorizationFilter;
 import com.project.ohouclonecoding.security.UserDetailsServiceImpl;
@@ -31,7 +32,7 @@ public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
-    private final UserRepository userRepository;
+    private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -45,7 +46,7 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, userRepository);
+        return new JwtAuthorizationFilter(jwtUtil, userDetailsService);
     }
 
     @Bean
