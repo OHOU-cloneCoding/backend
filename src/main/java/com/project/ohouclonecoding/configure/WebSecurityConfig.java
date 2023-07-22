@@ -1,6 +1,7 @@
 package com.project.ohouclonecoding.configure;
 
 import com.project.ohouclonecoding.jwt.JwtUtil;
+import com.project.ohouclonecoding.repository.RefreshTokenRepository;
 import com.project.ohouclonecoding.repository.UserRepository;
 import com.project.ohouclonecoding.security.JwtAuthorizationFilter;
 import com.project.ohouclonecoding.security.UserDetailsServiceImpl;
@@ -31,7 +32,7 @@ public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
-    private final UserRepository userRepository;
+    private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -45,7 +46,7 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, userRepository);
+        return new JwtAuthorizationFilter(jwtUtil, userDetailsService);
     }
 
     @Bean
@@ -62,6 +63,7 @@ public class WebSecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
                         .requestMatchers("/").permitAll() // 메인 페이지 요청 허가
+                        .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
                         .requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()

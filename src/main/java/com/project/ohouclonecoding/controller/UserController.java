@@ -27,9 +27,8 @@ public class UserController {
     @PostMapping("/auth/login")
     private void login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         try {
-            TokenDto responseDto = userService.login(loginRequestDto);
-            response.addHeader("Authorization", responseDto.getAccessToken());
-            response.addHeader("Refresh", responseDto.getRefreshToken());
+            String token = userService.login(loginRequestDto);
+            response.addHeader("Access", token);
         }catch(Exception e) {
             e.getMessage();
         }
