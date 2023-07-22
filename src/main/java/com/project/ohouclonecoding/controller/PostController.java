@@ -54,11 +54,10 @@ public class PostController {
     //게시글 수정
     @PutMapping("/{postId}")
     public String updatePost(@PathVariable("postId") Long postId,
-                                      @RequestBody PostRequestDto requestDto,
-                                      HttpServletRequest request){
-        User user = (User)request.getAttribute("user");
+                             @RequestBody PostRequestDto requestDto,
+                             @AuthenticationPrincipal UserDetailsImpl userDetails){
         try {
-            postService.updatePost(postId, requestDto, user);
+            postService.updatePost(postId, requestDto, userDetails);
         }catch (Exception e){
            return(e.getMessage());
         }
@@ -69,9 +68,9 @@ public class PostController {
     //게시글 삭제
     @DeleteMapping("/{postId}")
     public String deletePost(@PathVariable("postId") Long postId,
-                             HttpServletRequest request){
-        User user = (User) request.getAttribute("user");
-        postService.deleteMemo(postId, user);
+                             @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        postService.deleteMemo(postId, userDetails);
 
         return "게시글 삭제 성공";
     }

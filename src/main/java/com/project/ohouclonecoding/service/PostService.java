@@ -28,21 +28,17 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
-    //게시글 생성
     @Transactional
     public PostResponseDto createPost(PostRequestDto requestDto, MultipartFile postImg, UserDetailsImpl userDetails) throws IOException {
-
-//        String nickname = userDetails.getUser().getNickname();
-//        User finduser = userRepository.findByNickname(nickname).orElseThrow(
-//                () -> new IllegalArgumentException("존재하지 않는 닉네임입니다.")
-//        );
-            User user = userDetails.getUser();
+        User user = userDetails.getUser();
 
         //S3 이미지 저장
         String storedPostName = postS3Service.uploadImageFile(postImg);
 
         try {
-            Post savedPost = postRepository.save(new Post(user ,requestDto.getContent(), storedPostName));
+            // Set the nickname from the User entity
+            String nickname = user.getNickname();
+            Post savedPost = postRepository.save(new Post(user, nickname, requestDto.getContent(), storedPostName));
             return new PostResponseDto(savedPost);
         } catch (IllegalArgumentException | OptimisticLockingFailureException e) {
             throw new IllegalArgumentException("저장에 실패하였습니다");
@@ -68,21 +64,24 @@ public class PostService {
     }
 
     //게시글 수정
-    public PostResponseDto updatePost(Long postId, PostRequestDto requestDto, User user) {
+    @Transactional
+    public PostResponseDto updatePost(Long postId, PostRequestDto requestDto, UserDetailsImpl userDetails) {
         Post post = findPost(postId);
 
-        if (!(post.getNickname().equals(user.getNickname())) && !(user.getRole().getAuthority().equals("ROLE_ADMIN"))){
+        if (!(post.getNickname().equals(userDetails.getUser().getNickname()) && !(userDetails.getUser().getRole().getAuthority().equals("ROLE_ADMIN")))){
             throw new IllegalArgumentException("작성자와 관리자만 수정할 수 있습니다.");
         }
         post.update(requestDto);
         return new PostResponseDto(post);
     }
 
+
     //게시글 삭제
-    public void deleteMemo(Long postId, User user) {
+    @Transactional
+    public void deleteMemo(Long postId, UserDetailsImpl userDetails) {
         Post post = findPost(postId);
 
-        if (!(post.getNickname().equals(user.getNickname())) && !(user.getRole().getAuthority().equals("ROLE_ADMIN"))){
+        if (!(post.getNickname().equals(userDetails.getUser().getNickname()) && !(userDetails.getUser().getRole().getAuthority().equals("ROLE_ADMIN")))){
             throw new IllegalArgumentException("작성자와 관리자만 삭제할 수 있습니다.");
         }
 
