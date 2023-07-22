@@ -30,4 +30,11 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE})
     private List<Post> postList = new ArrayList<>();
+
+    public User(String nickname, String password, String email, UserRoleEnum role) {
+        this.nickname = nickname;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+    }
 }
