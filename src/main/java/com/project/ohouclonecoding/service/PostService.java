@@ -5,6 +5,8 @@ import com.project.ohouclonecoding.dto.PostResponseDto;
 import com.project.ohouclonecoding.entity.Post;
 import com.project.ohouclonecoding.entity.User;
 import com.project.ohouclonecoding.repository.PostRepository;
+import com.project.ohouclonecoding.repository.UserRepository;
+import com.project.ohouclonecoding.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -14,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,15 +26,19 @@ public class PostService {
     @Qualifier(value = "postS3ImageService")
     private final ImageMangerService postS3Service;
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
-    //게시글 생성
     @Transactional
-    public PostResponseDto createPost(PostRequestDto requestDto, MultipartFile postImg) throws IOException {
+    public PostResponseDto createPost(PostRequestDto requestDto, MultipartFile postImg, UserDetailsImpl userDetails) throws IOException {
+        User user = userDetails.getUser();
+
         //S3 이미지 저장
         String storedPostName = postS3Service.uploadImageFile(postImg);
 
         try {
-            Post savedPost = postRepository.save(new Post(requestDto.getNickname(), requestDto.getContent(), storedPostName));
+            // Set the nickname from the User entity
+            String nickname = user.getNickname();
+            Post savedPost = postRepository.save(new Post(user, nickname, requestDto.getContent(), storedPostName));
             return new PostResponseDto(savedPost);
         } catch (IllegalArgumentException | OptimisticLockingFailureException e) {
             throw new IllegalArgumentException("저장에 실패하였습니다");
@@ -57,21 +64,24 @@ public class PostService {
     }
 
     //게시글 수정
-    public PostResponseDto updatePost(Long postId, PostRequestDto requestDto, User user) {
+    @Transactional
+    public PostResponseDto updatePost(Long postId, PostRequestDto requestDto, UserDetailsImpl userDetails) {
         Post post = findPost(postId);
 
-        if (!(post.getNickname().equals(user.getNickname())) && !(user.getRole().getAuthority().equals("ROLE_ADMIN"))){
+        if (!(post.getNickname().equals(userDetails.getUser().getNickname()) && !(userDetails.getUser().getRole().getAuthority().equals("ROLE_ADMIN")))){
             throw new IllegalArgumentException("작성자와 관리자만 수정할 수 있습니다.");
         }
         post.update(requestDto);
         return new PostResponseDto(post);
     }
 
+
     //게시글 삭제
-    public void deleteMemo(Long postId, User user) {
+    @Transactional
+    public void deleteMemo(Long postId, UserDetailsImpl userDetails) {
         Post post = findPost(postId);
 
-        if (!(post.getNickname().equals(user.getNickname())) && !(user.getRole().getAuthority().equals("ROLE_ADMIN"))){
+        if (!(post.getNickname().equals(userDetails.getUser().getNickname()) && !(userDetails.getUser().getRole().getAuthority().equals("ROLE_ADMIN")))){
             throw new IllegalArgumentException("작성자와 관리자만 삭제할 수 있습니다.");
         }
 
