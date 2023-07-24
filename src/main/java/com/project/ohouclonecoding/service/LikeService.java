@@ -4,7 +4,7 @@ import com.project.ohouclonecoding.entity.*;
 import com.project.ohouclonecoding.repository.CommentLikeRepository;
 import com.project.ohouclonecoding.repository.CommentRepository;
 import com.project.ohouclonecoding.repository.PostLikeRepository;
-import com.project.ohouclonecoding.repository.PostRepository;
+import com.project.ohouclonecoding.repository.post.PostRepository;
 import com.project.ohouclonecoding.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

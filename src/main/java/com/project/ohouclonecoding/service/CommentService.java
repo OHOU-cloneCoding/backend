@@ -7,7 +7,7 @@ import com.project.ohouclonecoding.entity.Comment;
 import com.project.ohouclonecoding.entity.Post;
 import com.project.ohouclonecoding.entity.User;
 import com.project.ohouclonecoding.repository.CommentRepository;
-import com.project.ohouclonecoding.repository.PostRepository;
+import com.project.ohouclonecoding.repository.post.PostRepository;
 import com.project.ohouclonecoding.repository.UserRepository;
 import com.project.ohouclonecoding.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
