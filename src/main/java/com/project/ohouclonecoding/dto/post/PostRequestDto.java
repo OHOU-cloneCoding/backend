@@ -1,8 +1,7 @@
-package com.project.ohouclonecoding.dto;
+package com.project.ohouclonecoding.dto.post;
 
 
 import lombok.Getter;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 public class PostRequestDto {

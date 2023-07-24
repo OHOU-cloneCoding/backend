@@ -1,4 +1,4 @@
-package com.project.ohouclonecoding.dto;
+package com.project.ohouclonecoding.dto.comment;
 
 import lombok.Getter;
 
