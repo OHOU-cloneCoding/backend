@@ -1,12 +1,11 @@
 package com.project.ohouclonecoding.entity;
 
-import com.project.ohouclonecoding.dto.PostRequestDto;
+import com.project.ohouclonecoding.dto.post.PostRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,12 +28,17 @@ public class Post extends Auditing {
     @Column(nullable = false)
     private String postImg;
 
+    private long postViewCount = 0;
+
     @OneToMany(mappedBy = "post", cascade = {CascadeType.REMOVE})
     private List<Comment> commentList = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.REMOVE})
+    private List<PostLike> like = new ArrayList<>();
 
 
     public Post(User user, String nickname, String content, String storedPostName) {
@@ -47,5 +51,9 @@ public class Post extends Auditing {
 
     public void update(PostRequestDto requestDto) {
         this.content = requestDto.getContent();
+    }
+
+    public void increaseViewCount() {
+        this.postViewCount += 1;
     }
 }
