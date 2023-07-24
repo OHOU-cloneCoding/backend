@@ -4,6 +4,7 @@ import com.project.ohouclonecoding.entity.User;
 import com.project.ohouclonecoding.entity.UserRoleEnum;
 import com.project.ohouclonecoding.repository.UserRepository;
 import com.project.ohouclonecoding.security.UserDetailsImpl;
+import com.project.ohouclonecoding.security.UserDetailsServiceImpl;
 import com.project.ohouclonecoding.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,7 +21,11 @@ public class LikeController {
 
     @PostMapping("/posts/{postId}/like")
     public void getPostLike(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-
         likeService.getPostLike(postId, userDetails);
+    }
+
+    @PostMapping("/commemts/{commentId}/like")
+    public void getCommentLike(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        likeService.getCommentLike(commentId, userDetails);
     }
 }
