@@ -24,8 +24,8 @@ public class LikeController {
         likeService.getPostLike(postId, userDetails);
     }
 
-    @PostMapping("/commemts/{commentId}/like")
-    public void getCommentLike(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        likeService.getCommentLike(commentId, userDetails);
+    @PostMapping("/posts/{postId}/comments/{commentId}/like")
+    public void getCommentLike(@PathVariable Long postId,@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        likeService.getCommentLike(postId, commentId, userDetails);
     }
 }
