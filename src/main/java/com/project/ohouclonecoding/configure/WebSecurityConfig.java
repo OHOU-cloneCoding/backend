@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Configuration
 @EnableWebSecurity // Spring Security 지원을 가능하게 함
-@EnableGlobalMethodSecurity(securedEnabled = true)
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
@@ -63,8 +62,8 @@ public class WebSecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
                         .requestMatchers("/").permitAll() // 메인 페이지 요청 허가
-                        .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
+                        .requestMatchers("/api/mailCheck").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
                         .requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
