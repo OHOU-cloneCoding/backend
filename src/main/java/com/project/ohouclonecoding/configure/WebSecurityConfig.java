@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Configuration
 @EnableWebSecurity // Spring Security 지원을 가능하게 함
-@EnableGlobalMethodSecurity(securedEnabled = true)
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
