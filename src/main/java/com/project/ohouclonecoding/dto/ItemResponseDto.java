@@ -3,8 +3,12 @@ package com.project.ohouclonecoding.dto;
 
 import com.project.ohouclonecoding.entity.Item;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
+@NoArgsConstructor
+@ToString
 public class ItemResponseDto {
     private Long itemId;
     private String itemName;
