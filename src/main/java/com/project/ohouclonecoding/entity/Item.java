@@ -1,5 +1,6 @@
 package com.project.ohouclonecoding.entity;
 
+import com.project.ohouclonecoding.dto.CrawlingDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,5 +32,12 @@ public class Item {
         this.itemTitle = itemTitle;
         this.price = price;
         this.itemImg = storedImageName;
+    }
+
+    public Item(CrawlingDto crawlingDto) {
+        this.itemName = crawlingDto.getItemName();
+        this.itemTitle = crawlingDto.getItemTitle();;
+        this.price = crawlingDto.getPrice();
+        this.itemImg = crawlingDto.getItemImg();
     }
 }
