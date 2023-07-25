@@ -15,7 +15,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .allowedHeaders("*")
                 .exposedHeaders("*")
                 .allowedOrigins("http://localhost:3000")
-                .exposedHeaders("Authorization")
-                .allowedMethods("OPTIONS", "GET", "POST", "PUT", "DELETE");
+                .exposedHeaders("Access", "Refresh")
+                .allowedMethods("OPTIONS", "GET", "POST", "PUT", "DELETE")
+                .maxAge(3000);
     }
 }
