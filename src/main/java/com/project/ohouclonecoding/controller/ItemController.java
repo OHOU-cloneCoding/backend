@@ -23,7 +23,6 @@ public class ItemController {
     private final ItemRepository itemRepository;
 
     @PostMapping("/items")
-//    public ItemResponseDto createItem(@ModelAttribute ItemRequestDto requestDto) throws IOException {
     public ItemResponseDto createItem(
             @RequestPart ItemRequestDto requestDto,
             @RequestPart("itemImage") MultipartFile itemImage
@@ -31,7 +30,7 @@ public class ItemController {
         return itemService.createItem(requestDto, itemImage);
     }
 
-    @GetMapping("/home/items")
+    @GetMapping("/items/home")
     public Page<ItemResponseDto> getItems(Pageable pageable) {
         return itemService.getItems(pageable);
     }
@@ -42,7 +41,7 @@ public class ItemController {
     }
 
     @GetMapping("/items/search")
-    public Page<ItemResponseDto> searchItems(@RequestBody ItemSearchDto condition) {
+    public Page<ItemResponseDto> searchItems(ItemSearchDto condition) {
         return itemRepository.searchItems(condition);
     }
 
