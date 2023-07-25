@@ -59,17 +59,17 @@ public class UserService{
         userRepository.save(user);
     }
     public LoginResponseDto login(LoginRequestDto requestDto){
-        User user = userRepository.findByNickname(requestDto.getNickname()).orElseThrow(() ->
-                new IllegalArgumentException("가입되지 않은 이름입니다."));
+        User user = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(() ->
+                new IllegalArgumentException("가입되지 않은 이메일입니다."));
         if(!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())){
             throw new IllegalArgumentException("잘못된 비밀번호 입니다.");
         }
-        TokenDto tokenDto = jwtUtil.createAllToken(user.getNickname(), user.getRole());
-        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByNickname(user.getNickname());
+        TokenDto tokenDto = jwtUtil.createAllToken(user.getEmail(), user.getRole());
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByEmail(user.getEmail());
         if(refreshToken.isPresent()){
             refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
         }else{
-            RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), user.getNickname());
+            RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), user.getEmail());
             refreshTokenRepository.save(newToken);
         }
         return new LoginResponseDto(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
