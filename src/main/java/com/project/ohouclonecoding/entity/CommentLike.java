@@ -30,6 +30,6 @@ public class CommentLike {
         this.user = user;
         this.post = post;
         this.comment = comment;
-
+        comment.getCommentLikes().add(this);
     }
 }

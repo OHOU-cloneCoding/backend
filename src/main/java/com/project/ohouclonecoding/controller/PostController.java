@@ -1,13 +1,16 @@
 package com.project.ohouclonecoding.controller;
 
 
-import com.project.ohouclonecoding.dto.PostRequestDto;
-import com.project.ohouclonecoding.dto.PostResponseDto;
-import com.project.ohouclonecoding.entity.User;
+import com.project.ohouclonecoding.dto.PostSearchDto;
+import com.project.ohouclonecoding.dto.post.AllPostResponseDto;
+import com.project.ohouclonecoding.dto.post.OnePostResponseDto;
+import com.project.ohouclonecoding.dto.post.PostRequestDto;
+import com.project.ohouclonecoding.repository.post.PostRepository;
 import com.project.ohouclonecoding.security.UserDetailsImpl;
 import com.project.ohouclonecoding.service.PostService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,61 +20,62 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/post")
+@RequestMapping("/api/posts")
 public class PostController {
 
     private final PostService postService;
+    private final PostRepository postRepository;
 
     //게시글 생성
     @PostMapping("")
-    public PostResponseDto createPost(
+    @ResponseStatus(HttpStatus.OK)
+    public void createPost(
             @RequestPart PostRequestDto postRequestDto,
             @RequestPart("postImg") MultipartFile postImg,
             @AuthenticationPrincipal UserDetailsImpl userDetails
             ) throws IOException {
-        return postService.createPost(postRequestDto,postImg,userDetails);
+        postService.createPost(postRequestDto,postImg,userDetails);
     }
 
     //게시글 전체 조회(home - 페이징 8개)
     @GetMapping("/home")
-    public List<PostResponseDto> getHomePost(){
+    public List<AllPostResponseDto> getHomePost(){
         return postService.getHomePost();
     }
 
     //게시글 전체 조회(집사진)
     @GetMapping("")
-    public List<PostResponseDto> getPost(){
+    public List<AllPostResponseDto> getPost(){
         return postService.getPost();
     }
 
-    //게시글 선택 조회
+    //게시글 상세 조회
     @GetMapping("/{postId}")
-    public PostResponseDto getOnePost(@PathVariable("postId") Long postId){
-        return postService.getOnePost(postId);
-
+    public OnePostResponseDto getOnePost(@PathVariable("postId") Long postId,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return postService.getOnePost(postId, userDetails);
     }
 
     //게시글 수정
     @PutMapping("/{postId}")
-    public String updatePost(@PathVariable("postId") Long postId,
+    @ResponseStatus(HttpStatus.OK)
+    public void updatePost(@PathVariable("postId") Long postId,
                              @RequestBody PostRequestDto requestDto,
                              @AuthenticationPrincipal UserDetailsImpl userDetails){
-        try {
             postService.updatePost(postId, requestDto, userDetails);
-        }catch (Exception e){
-           return(e.getMessage());
-        }
-
-        return "게시글 수정 성공";
     }
 
     //게시글 삭제
     @DeleteMapping("/{postId}")
-    public String deletePost(@PathVariable("postId") Long postId,
+    @ResponseStatus(HttpStatus.OK)
+    public void deletePost(@PathVariable("postId") Long postId,
                              @AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        postService.deleteMemo(postId, userDetails);
+        postService.deletePost(postId, userDetails);
+    }
 
-        return "게시글 삭제 성공";
+    @GetMapping("/search")
+    public Page<AllPostResponseDto> searchPosts(PostSearchDto condition) {
+        return postRepository.searchPosts(condition);
     }
 }

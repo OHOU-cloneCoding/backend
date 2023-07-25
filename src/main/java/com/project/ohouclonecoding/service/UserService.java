@@ -23,7 +23,7 @@ public class UserService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-//    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     // ADMIN_TOKEN
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
@@ -58,13 +58,21 @@ public class UserService{
         User user = new User(nickname, password, email, role);
         userRepository.save(user);
     }
-    public String login(LoginRequestDto requestDto){
+    public LoginResponseDto login(LoginRequestDto requestDto){
         User user = userRepository.findByNickname(requestDto.getNickname()).orElseThrow(() ->
                 new IllegalArgumentException("가입되지 않은 이름입니다."));
         if(!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())){
-            new IllegalArgumentException("잘못된 비밀번호 입니다.");
+            throw new IllegalArgumentException("잘못된 비밀번호 입니다.");
         }
-        return jwtUtil.createToken(user.getNickname(), user.getRole());
+        TokenDto tokenDto = jwtUtil.createAllToken(user.getNickname(), user.getRole());
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByNickname(user.getNickname());
+        if(refreshToken.isPresent()){
+            refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
+        }else{
+            RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), user.getNickname());
+            refreshTokenRepository.save(newToken);
+        }
+        return new LoginResponseDto(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
 
     }
 }

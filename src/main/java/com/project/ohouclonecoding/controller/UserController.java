@@ -1,9 +1,10 @@
 package com.project.ohouclonecoding.controller;
 
 import com.project.ohouclonecoding.dto.LoginRequestDto;
+import com.project.ohouclonecoding.dto.LoginResponseDto;
 import com.project.ohouclonecoding.dto.SignupRequestDto;
-import com.project.ohouclonecoding.dto.TokenDto;
 import com.project.ohouclonecoding.email.MailSendServiceImpl;
+import com.project.ohouclonecoding.jwt.JwtUtil;
 import com.project.ohouclonecoding.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +34,9 @@ public class UserController {
     @PostMapping("/auth/login")
     private void login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         try {
-            String token = userService.login(loginRequestDto);
-            response.addHeader("Access", token);
+            LoginResponseDto responseDto = userService.login(loginRequestDto);
+            response.addHeader(JwtUtil.ACCESS_HEADER, responseDto.getAccessToken());
+            response.addHeader(JwtUtil.REFRESH_HEADER, responseDto.getRefreshToken());
         }catch(Exception e) {
             e.getMessage();
         }

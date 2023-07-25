@@ -1,33 +1,39 @@
-package com.project.ohouclonecoding.dto;
+package com.project.ohouclonecoding.dto.post;
 
+import com.project.ohouclonecoding.dto.comment.CommentResponseDto;
 import com.project.ohouclonecoding.entity.Comment;
 import com.project.ohouclonecoding.entity.Post;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.web.multipart.MultipartFile;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 @Getter
-public class PostResponseDto {
+@NoArgsConstructor
+@AllArgsConstructor
+public class AllPostResponseDto {
     private Long postId;
     private String nickname;
     private String content;
     private String postImg;
     private LocalDateTime createdAt;
-    private List<CommentResponseDto> commentList = new ArrayList<>();
+    private int likeSize;
+    private int commentSize;
+    private long postViewCount;
 
 
 
-    public PostResponseDto(Post post) {
+    public AllPostResponseDto(Post post) {
         this.postId = post.getPostId();
         this.nickname = post.getNickname();
         this.content = post.getContent();
         this.postImg = post.getPostImg();
         this.createdAt = post.getCreatedAt();
-        for (Comment comment : post.getCommentList()) {
-            this.commentList.add(new CommentResponseDto(comment));
-        }
+        this.likeSize = post.getLike().size();
+        this.commentSize = post.getCommentList().size();
+        this.postViewCount = post.getPostViewCount();
     }
 }

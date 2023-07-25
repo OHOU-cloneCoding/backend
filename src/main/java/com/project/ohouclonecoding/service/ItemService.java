@@ -1,16 +1,20 @@
 package com.project.ohouclonecoding.service;
 
 
-import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.project.ohouclonecoding.dto.ItemRequestDto;
 import com.project.ohouclonecoding.dto.ItemResponseDto;
+import com.project.ohouclonecoding.dto.ItemSearchDto;
 import com.project.ohouclonecoding.entity.Item;
-import com.project.ohouclonecoding.repository.ItemRepository;
+import com.project.ohouclonecoding.repository.Item.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,9 +30,9 @@ public class ItemService {
 
 
     @Transactional
-    public ItemResponseDto createItem(ItemRequestDto requestDto) throws IOException {
+    public ItemResponseDto createItem(ItemRequestDto requestDto, MultipartFile itemImage) throws IOException {
         // S3 이미지 저장
-        String storedImageName = itemS3Service.uploadImageFile(requestDto.getItemImage());
+        String storedImageName = itemS3Service.uploadImageFile(itemImage);
 
 
         try {
@@ -40,9 +44,9 @@ public class ItemService {
         }
     }
 
-    public List<ItemResponseDto> getItems() {
-        List<Item> items = itemRepository.findAll();
-        return items.stream().map(ItemResponseDto::new).toList();
+    public Page<ItemResponseDto> getItems(Pageable pageable) {
+        Page<Item> items = itemRepository.findAllByOrderByItemIdDesc(pageable);
+        return items.map(ItemResponseDto::new);
     }
 
     public ItemResponseDto getOneItem(Long itemId) {

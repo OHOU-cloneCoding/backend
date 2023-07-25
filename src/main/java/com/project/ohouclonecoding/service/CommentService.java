@@ -1,13 +1,13 @@
 package com.project.ohouclonecoding.service;
 
 
-import com.project.ohouclonecoding.dto.CommentRequestDto;
-import com.project.ohouclonecoding.dto.CommentResponseDto;
+import com.project.ohouclonecoding.dto.comment.CommentRequestDto;
+import com.project.ohouclonecoding.dto.comment.CommentResponseDto;
 import com.project.ohouclonecoding.entity.Comment;
 import com.project.ohouclonecoding.entity.Post;
 import com.project.ohouclonecoding.entity.User;
 import com.project.ohouclonecoding.repository.CommentRepository;
-import com.project.ohouclonecoding.repository.PostRepository;
+import com.project.ohouclonecoding.repository.post.PostRepository;
 import com.project.ohouclonecoding.repository.UserRepository;
 import com.project.ohouclonecoding.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +34,8 @@ public class CommentService {
         );
 
         User user = userDetails.getUser();
-        String nickname = user.getNickname();
 
-        Comment newComment = commentRepository.save(new Comment(requestDto,nickname, post, user));
+        Comment newComment = commentRepository.save(new Comment(requestDto, post, user));
 
         return new CommentResponseDto(newComment);
     }
@@ -50,7 +49,7 @@ public class CommentService {
 
         User user = userDetails.getUser();
 
-        if (!(comment.getNickname().equals(user.getNickname())) && !(user.getRole().getAuthority().equals("ROLE_ADMIN"))){
+        if (!(comment.getUser().getNickname().equals(user.getNickname())) && !(user.getRole().getAuthority().equals("ROLE_ADMIN"))){
             throw new IllegalArgumentException("작성자와 관리자만 수정할 수 있습니다.");
         }
 
@@ -66,7 +65,7 @@ public class CommentService {
 
         User user = userDetails.getUser();
 
-        if (!(comment.getNickname().equals(user.getNickname())) && !(user.getRole().getAuthority().equals("ROLE_ADMIN"))){
+        if (!(comment.getUser().getNickname().equals(user.getNickname())) && !(user.getRole().getAuthority().equals("ROLE_ADMIN"))){
             throw new IllegalArgumentException("작성자와 관리자만 삭제할 수 있습니다.");
         }
 
