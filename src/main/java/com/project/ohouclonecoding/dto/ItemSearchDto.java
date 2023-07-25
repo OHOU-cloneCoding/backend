@@ -1,12 +1,9 @@
 package com.project.ohouclonecoding.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
-@Builder
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ItemSearchDto {
@@ -15,7 +12,7 @@ public class ItemSearchDto {
     private Integer maxPrice;
 
     private String orderField = "itemId";
-    private Boolean isASC = true;
+    private boolean isASC = false;
     private Integer page = 1;
     private Integer size = 8;
 }

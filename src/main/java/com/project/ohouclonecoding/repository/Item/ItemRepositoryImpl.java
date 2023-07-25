@@ -45,7 +45,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
                 )
                 .offset(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
-                .orderBy(itemOrderBy(condition.getOrderField(), condition.getIsASC()))
+                .orderBy(itemOrderBy(condition.getOrderField(), condition.isASC()))
                 .fetch();
 
         JPAQuery<Long> countQuery = jpaQueryFactory
