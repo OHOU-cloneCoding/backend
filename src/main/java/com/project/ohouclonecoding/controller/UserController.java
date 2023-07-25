@@ -27,7 +27,7 @@ public class UserController {
 
     @PostMapping("/auth/signup")
     @ResponseStatus(code = HttpStatus.OK)
-    public void signup(@RequestBody SignupRequestDto requestDto, BindingResult bindingResult, HttpServletResponse httpServletResponse) {
+    public void signup(@RequestBody SignupRequestDto requestDto) {
         userService.signup(requestDto);
     }
 

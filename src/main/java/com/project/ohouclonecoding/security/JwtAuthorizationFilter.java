@@ -14,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -34,21 +33,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
-        System.out.println("1");
         String accessToken = jwtUtil.getJwtFromHeader(req, "Access");
-        System.out.println("accessToken = " + accessToken);
         String refreshToken = jwtUtil.getJwtFromHeader(req, "Refresh");
-        System.out.println("refreshToken = " + refreshToken);
 
         if(accessToken!= null){
             if(jwtUtil.validateToken(accessToken)){
-                setAuthentication(jwtUtil.getNicknameFromToken(accessToken));
+                setAuthentication(jwtUtil.getEmailFromToken(accessToken));
             }else if(refreshToken != null){
                 boolean isRefreshToken = jwtUtil.refreshTokenValidation(refreshToken);
                 if(isRefreshToken){
-                    String nickname = jwtUtil.getNicknameFromToken(refreshToken);
-                    User user =  userRepository.findByNickname(nickname).orElseThrow(() -> new IllegalArgumentException("잘못된 회원명입니다."));
-                    String newAccessToken = jwtUtil.createToken(nickname, user.getRole() , "Access");
+                    String email = jwtUtil.getEmailFromToken(refreshToken);
+                    User user =  userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("잘못된 이메일입니다."));
+                    String newAccessToken = jwtUtil.createToken(email, user.getRole() , "Access");
                     System.out.println("newAccessToken = " + newAccessToken);
                     // 여기 아래 set header 원래 이름 Access_Token였음 참고바람
                     res.setHeader("Access", newAccessToken);
@@ -73,9 +69,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     // 인증 객체 생성
-    private Authentication createAuthentication(String username) {
+    private Authentication createAuthentication(String email) {
         System.out.println("createAuthentication");
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
