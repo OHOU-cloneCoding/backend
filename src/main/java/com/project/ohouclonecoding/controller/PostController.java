@@ -1,12 +1,15 @@
 package com.project.ohouclonecoding.controller;
 
 
+import com.project.ohouclonecoding.dto.PostSearchDto;
 import com.project.ohouclonecoding.dto.post.AllPostResponseDto;
 import com.project.ohouclonecoding.dto.post.OnePostResponseDto;
 import com.project.ohouclonecoding.dto.post.PostRequestDto;
+import com.project.ohouclonecoding.repository.post.PostRepository;
 import com.project.ohouclonecoding.security.UserDetailsImpl;
 import com.project.ohouclonecoding.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +24,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final PostRepository postRepository;
 
     //게시글 생성
     @PostMapping("")
@@ -68,5 +72,10 @@ public class PostController {
                              @AuthenticationPrincipal UserDetailsImpl userDetails){
 
         postService.deletePost(postId, userDetails);
+    }
+
+    @GetMapping("/search")
+    public Page<AllPostResponseDto> searchPosts(PostSearchDto condition) {
+        return postRepository.searchPosts(condition);
     }
 }
