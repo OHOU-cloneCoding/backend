@@ -1,12 +1,9 @@
 package com.project.ohouclonecoding.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
-@Builder
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostSearchDto {
@@ -14,6 +11,6 @@ public class PostSearchDto {
 
     private int size = 10;
     private int page = 1;
-    private boolean isASC = true;
+    private boolean isASC = false;
     private String orderField = "postId"; // content, createdAt
 }

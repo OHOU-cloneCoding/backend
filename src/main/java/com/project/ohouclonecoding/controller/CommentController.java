@@ -1,7 +1,9 @@
 package com.project.ohouclonecoding.controller;
 
+import com.project.ohouclonecoding.dto.MessageResponseDto;
 import com.project.ohouclonecoding.dto.comment.CommentRequestDto;
 import com.project.ohouclonecoding.dto.comment.CommentResponseDto;
+import com.project.ohouclonecoding.entity.User;
 import com.project.ohouclonecoding.security.UserDetailsImpl;
 import com.project.ohouclonecoding.service.CommentService;
 import jakarta.transaction.Transactional;
@@ -12,36 +14,40 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/posts")
-@Transactional
 public class CommentController {
 
     private final CommentService commentService;
 
     //댓글 생성
     @PostMapping("/{postId}/comments")
-    public CommentResponseDto createComment(@PathVariable Long postId,
+    public MessageResponseDto createComment(@PathVariable Long postId,
                                             @RequestBody CommentRequestDto requestDto,
                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
 
-        return commentService.createComment(postId, requestDto, userDetails);
+        commentService.createComment(postId, requestDto, user);
+
+        return new MessageResponseDto("댓글 생성 성공");
     }
 
     //댓글 수정
     @PutMapping("/{postId}/comments/{commentId}")
-    public String updateComment(@PathVariable Long commentId,
-                                @RequestBody CommentRequestDto requestDto,
-                                @AuthenticationPrincipal UserDetailsImpl userDetails){
-        commentService.updateComment(commentId, requestDto, userDetails);
+    public MessageResponseDto updateComment(@PathVariable Long commentId,
+                                            @RequestBody CommentRequestDto requestDto,
+                                            @AuthenticationPrincipal UserDetailsImpl userDetails){
+        User user = userDetails.getUser();
+        commentService.updateComment(commentId, requestDto, user);
 
-        return "댓글 수정 성공";
+        return new MessageResponseDto("댓글 수정 성공");
     }
 
 
     //댓글 삭제
     @DeleteMapping("/{postId}/comments/{commentId}")
-    public String updageComment(@PathVariable Long commentId,
+    public MessageResponseDto updageComment(@PathVariable Long commentId,
                                 @AuthenticationPrincipal UserDetailsImpl userDetails){
-        commentService.deleteComment(commentId, userDetails);
-        return "댓글 삭제 성공";
+        User user = userDetails.getUser();
+        commentService.deleteComment(commentId, user);
+        return new MessageResponseDto("댓글 삭제 성공");
     }
 }

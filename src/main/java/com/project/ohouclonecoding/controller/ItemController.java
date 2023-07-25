@@ -4,6 +4,7 @@ package com.project.ohouclonecoding.controller;
 import com.project.ohouclonecoding.dto.ItemRequestDto;
 import com.project.ohouclonecoding.dto.ItemResponseDto;
 import com.project.ohouclonecoding.dto.ItemSearchDto;
+import com.project.ohouclonecoding.dto.MessageResponseDto;
 import com.project.ohouclonecoding.repository.Item.ItemRepository;
 import com.project.ohouclonecoding.service.ItemService;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +25,14 @@ public class ItemController {
 
     @PostMapping("/items")
 //    public ItemResponseDto createItem(@ModelAttribute ItemRequestDto requestDto) throws IOException {
-    public ItemResponseDto createItem(
+    public MessageResponseDto createItem(
             @RequestPart ItemRequestDto requestDto,
             @RequestPart("itemImage") MultipartFile itemImage
     ) throws IOException {
-        return itemService.createItem(requestDto, itemImage);
+        itemService.createItem(requestDto, itemImage);
+        return new MessageResponseDto("상품 등록 성공");
     }
+
 
     @GetMapping("/home/items")
     public Page<ItemResponseDto> getItems(Pageable pageable) {
