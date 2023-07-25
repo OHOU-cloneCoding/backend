@@ -20,6 +20,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        
+      - name: Touch resources
+        run: touch ./src/main/resources
+        shell: bash
       
       - name: Touch application.properties
         run: touch ./src/main/resources/application.properties
