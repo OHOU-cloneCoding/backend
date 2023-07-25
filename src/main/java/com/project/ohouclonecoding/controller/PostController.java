@@ -1,10 +1,12 @@
 package com.project.ohouclonecoding.controller;
 
 
+import com.project.ohouclonecoding.dto.MessageResponseDto;
 import com.project.ohouclonecoding.dto.PostSearchDto;
 import com.project.ohouclonecoding.dto.post.AllPostResponseDto;
 import com.project.ohouclonecoding.dto.post.OnePostResponseDto;
 import com.project.ohouclonecoding.dto.post.PostRequestDto;
+import com.project.ohouclonecoding.entity.User;
 import com.project.ohouclonecoding.repository.post.PostRepository;
 import com.project.ohouclonecoding.security.UserDetailsImpl;
 import com.project.ohouclonecoding.service.PostService;
@@ -29,12 +31,15 @@ public class PostController {
     //게시글 생성
     @PostMapping("")
     @ResponseStatus(HttpStatus.OK)
-    public void createPost(
+    public MessageResponseDto createPost(
             @RequestPart PostRequestDto postRequestDto,
             @RequestPart("postImg") MultipartFile postImg,
             @AuthenticationPrincipal UserDetailsImpl userDetails
             ) throws IOException {
-        postService.createPost(postRequestDto,postImg,userDetails);
+        User user = userDetails.getUser();
+        postService.createPost(postRequestDto,postImg,user);
+
+        return new MessageResponseDto("게시글 생성 성공");
     }
 
     //게시글 전체 조회(home - 페이징 8개)
@@ -53,25 +58,32 @@ public class PostController {
     @GetMapping("/{postId}")
     public OnePostResponseDto getOnePost(@PathVariable("postId") Long postId,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return postService.getOnePost(postId, userDetails);
+        User user = userDetails.getUser();
+        return postService.getOnePost(postId, user);
     }
 
     //게시글 수정
     @PutMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updatePost(@PathVariable("postId") Long postId,
-                             @RequestBody PostRequestDto requestDto,
-                             @AuthenticationPrincipal UserDetailsImpl userDetails){
-            postService.updatePost(postId, requestDto, userDetails);
+    public MessageResponseDto updatePost(@PathVariable("postId") Long postId,
+                                         @RequestBody PostRequestDto requestDto,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails){
+        User user = userDetails.getUser();
+        postService.updatePost(postId, requestDto, user);
+
+        return new MessageResponseDto("게시글 수정 성공");
     }
 
     //게시글 삭제
     @DeleteMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deletePost(@PathVariable("postId") Long postId,
+    public MessageResponseDto deletePost(@PathVariable("postId") Long postId,
                              @AuthenticationPrincipal UserDetailsImpl userDetails){
+        User user = userDetails.getUser();
 
-        postService.deletePost(postId, userDetails);
+        postService.deletePost(postId, user);
+
+        return new MessageResponseDto("게시글 삭제 성공");
     }
 
     @GetMapping("/search")

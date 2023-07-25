@@ -33,9 +33,9 @@ public class PostService {
     private final PostLikeRepository postLikeRepository;
     private final CommentLikeRepository commentLikeRepository;
 
+    //게시글 생성
     @Transactional
-    public void createPost(PostRequestDto requestDto, MultipartFile postImg, UserDetailsImpl userDetails) throws IOException {
-        User user = userDetails.getUser();
+    public void createPost(PostRequestDto requestDto, MultipartFile postImg, User user) throws IOException {
 
         //S3 이미지 저장
         String storedPostName = postS3Service.uploadImageFile(postImg);
@@ -62,13 +62,12 @@ public class PostService {
 
     //게시물 상세조회
     @Transactional
-    public OnePostResponseDto getOnePost(Long postId, UserDetailsImpl userDetails) {
+    public OnePostResponseDto getOnePost(Long postId, User user) {
         Post findPost = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물을 찾을 수 없습니다."));
 
         findPost.increaseViewCount();
 
-        User user = userDetails.getUser();
 
         boolean hasLikedPost = false;
 
@@ -89,22 +88,22 @@ public class PostService {
 
     //게시글 수정
     @Transactional
-    public void updatePost(Long postId, PostRequestDto requestDto, UserDetailsImpl userDetails) {
+    public void updatePost(Long postId, PostRequestDto requestDto, User user) {
         Post post = findPost(postId);
-
-        if (!(post.getNickname().equals(userDetails.getUser().getNickname()) && !(userDetails.getUser().getRole().getAuthority().equals("ROLE_ADMIN")))){
+        if (!(post.getNickname().equals(user.getNickname()) && !(user.getRole().getAuthority().equals("ROLE_ADMIN")))){
             throw new IllegalArgumentException("작성자와 관리자만 수정할 수 있습니다.");
         }
-        post.update(requestDto);
+        String content = requestDto.getContent();
+        post.update(content);
     }
 
 
     //게시글 삭제
     @Transactional
-    public void deletePost(Long postId, UserDetailsImpl userDetails) {
+    public void deletePost(Long postId, User user) {
         Post post = findPost(postId);
 
-        if (!(post.getNickname().equals(userDetails.getUser().getNickname()) && !(userDetails.getUser().getRole().getAuthority().equals("ROLE_ADMIN")))){
+        if (!(post.getNickname().equals(user.getNickname()) && !(user.getRole().getAuthority().equals("ROLE_ADMIN")))){
             throw new IllegalArgumentException("작성자와 관리자만 삭제할 수 있습니다.");
         }
 

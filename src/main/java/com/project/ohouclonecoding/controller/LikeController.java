@@ -1,5 +1,7 @@
 package com.project.ohouclonecoding.controller;
 
+import com.project.ohouclonecoding.dto.MessageResponseDto;
+import com.project.ohouclonecoding.entity.User;
 import com.project.ohouclonecoding.security.UserDetailsImpl;
 import com.project.ohouclonecoding.service.LikeService;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +22,13 @@ public class LikeController {
 
     @PostMapping("/posts/{postId}/like")
     public void getPostLike(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        likeService.getPostLike(postId, userDetails);
+        User user = userDetails.getUser();
+        likeService.getPostLike(postId, user);
     }
 
     @PostMapping("/posts/{postId}/comments/{commentId}/like")
     public void getCommentLike(@PathVariable Long postId,@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        likeService.getCommentLike(postId, commentId, userDetails);
+        User user = userDetails.getUser();
+        likeService.getCommentLike(postId, commentId, user);
     }
 }

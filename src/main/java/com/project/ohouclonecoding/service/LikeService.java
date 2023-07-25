@@ -5,7 +5,6 @@ import com.project.ohouclonecoding.repository.CommentLikeRepository;
 import com.project.ohouclonecoding.repository.CommentRepository;
 import com.project.ohouclonecoding.repository.PostLikeRepository;
 import com.project.ohouclonecoding.repository.post.PostRepository;
-import com.project.ohouclonecoding.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +17,9 @@ public class LikeService {
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
 
-    public void getPostLike(Long postId, UserDetailsImpl userDetails){
+    public void getPostLike(Long postId, User user){
         Post post = postRepository.findById(postId).orElseThrow(
                 ()-> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
-        User user = userDetails.getUser();
 
         if(!postLikeRepository.existsLikeByPostAndUser(post, user)) {
             PostLike like = new PostLike(post, user);
@@ -33,13 +31,12 @@ public class LikeService {
         }
     }
 
-    public void getCommentLike(Long postId, Long commentId, UserDetailsImpl userDetails) {
+    public void getCommentLike(Long postId, Long commentId, User user) {
         Post post = postRepository.findById(postId).orElseThrow(
                 ()-> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 ()-> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
-        User user = userDetails.getUser();
 
         if(!commentLikeRepository.existsLikeByCommentAndUser(comment, user)){
             CommentLike like = new CommentLike(user, post, comment);
