@@ -45,8 +45,7 @@ public class ItemController {
     }
 
     @GetMapping("/items/search")
-    public Page<ItemResponseDto> searchItems(@RequestBody ItemSearchDto condition) {
+    public Page<ItemResponseDto> searchItems(@ModelAttribute ItemSearchDto condition) {
         return itemRepository.searchItems(condition);
     }
-
 }
