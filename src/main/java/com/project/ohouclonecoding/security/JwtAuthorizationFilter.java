@@ -1,5 +1,6 @@
 package com.project.ohouclonecoding.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.ohouclonecoding.entity.User;
 import com.project.ohouclonecoding.jwt.JwtUtil;
 import com.project.ohouclonecoding.repository.UserRepository;
@@ -9,6 +10,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -17,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 @Slf4j(topic = "JWT 검증 및 인가")
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -47,11 +51,22 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     String email = jwtUtil.getEmailFromToken(refreshToken);
                     User user =  userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("잘못된 이메일입니다."));
                     String newAccessToken = jwtUtil.createToken(email, user.getRole() , "Access");
+                    setAuthentication(jwtUtil.getEmailFromToken(newAccessToken.substring(7)));
                     res.setHeader("Access", newAccessToken);
-                    Claims info = jwtUtil.getUserInfoFromToken(newAccessToken.substring(7));
-                    setAuthentication(info.getSubject());
+////                    Claims info = jwtUtil.getUserInfoFromToken(newAccessToken.substring(7));
+////                    setAuthentication(info.getSubject());
                 } else{
-                    throw new IllegalArgumentException("잘못된 토큰입니다");
+                    String a = "{\n \"msg\" : \"Expired AccesToken\"}";
+                    try {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    res.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                    res.getWriter().print(a);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                    res.setStatus(403);
+//                    throw new IllegalArgumentException("잘못된 토큰입니다");
+                    return;
                 }
             }
         }
