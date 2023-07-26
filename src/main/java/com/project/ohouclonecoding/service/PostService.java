@@ -1,6 +1,7 @@
 package com.project.ohouclonecoding.service;
 
 import com.project.ohouclonecoding.dto.comment.CommentResponseDto;
+import com.project.ohouclonecoding.dto.comment.OnePostCommentResponseDto;
 import com.project.ohouclonecoding.dto.post.AllPostResponseDto;
 import com.project.ohouclonecoding.dto.post.OnePostResponseDto;
 import com.project.ohouclonecoding.dto.post.PostRequestDto;
@@ -74,11 +75,14 @@ public class PostService {
             hasLikedPost = true;
         }
 
-        List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
+        List<OnePostCommentResponseDto> commentResponseDtoList = new ArrayList<>();
         for (Comment comment : findPost.getCommentList()) {
             // 해당 유저가 댓글에 좋아요를 했는지 확인
             boolean hasCommentLiked = commentLikeRepository.existsLikeByCommentAndUser(comment, user);
-            commentResponseDtoList.add(new CommentResponseDto(comment, hasCommentLiked));
+
+            boolean isAuth = comment.getUser().getNickname().equals(user.getNickname());
+
+            commentResponseDtoList.add(new OnePostCommentResponseDto(comment, hasCommentLiked, isAuth));
         }
 
         return new OnePostResponseDto(findPost, hasLikedPost, commentResponseDtoList);
