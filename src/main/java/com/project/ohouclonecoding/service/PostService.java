@@ -70,11 +70,14 @@ public class PostService {
 
         findPost.increaseViewCount();
 
-
+        boolean postOwner = false;
         boolean hasLikedPost = false;
 
         if (postLikeRepository.existsLikeByPostAndUser(findPost, user)){
             hasLikedPost = true;
+        }
+        if(findPost.getUser().getUserId() == user.getUserId()){
+            postOwner = true;
         }
 
         List<OnePostCommentResponseDto> commentResponseDtoList = new ArrayList<>();
@@ -87,7 +90,7 @@ public class PostService {
             commentResponseDtoList.add(new OnePostCommentResponseDto(comment, hasCommentLiked, isAuth));
         }
 
-        return new OnePostResponseDto(findPost, hasLikedPost, commentResponseDtoList);
+        return new OnePostResponseDto(findPost, hasLikedPost, commentResponseDtoList, postOwner);
     }
 
 
