@@ -1,6 +1,5 @@
 package com.project.ohouclonecoding.entity;
 
-import com.project.ohouclonecoding.dto.post.PostRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,8 +48,8 @@ public class Post extends Auditing {
     }
 
 
-    public void update(PostRequestDto requestDto) {
-        this.content = requestDto.getContent();
+    public void update(String content) {
+        this.content = content;
     }
 
     public void increaseViewCount() {

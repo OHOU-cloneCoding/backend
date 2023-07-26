@@ -8,6 +8,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,7 +56,7 @@ public class JwtUtil {
     public String createToken(String email, UserRoleEnum role, String type) {
         Date date = new Date();
 
-        long time = type.equals("Access") ? 5 * 60 * 1000L : 30 * 60 * 1000L;
+        long time = type.equals("Access") ? 5 * 30 * 1000L : 30 * 30 * 1000L;
 
         return BEARER_PREFIX +
                 Jwts.builder()
@@ -84,24 +85,48 @@ public class JwtUtil {
     }
 
     // 토큰 검증
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token, HttpServletResponse res, String type) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
-            log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+            if(type.equals("Access")){
+                res.setHeader("AccessTokenError", "Invalid JWT signature.");
+                log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+                throw new IllegalArgumentException("유효하지 않는 JWT 서명 입니다.");
+            }else {
+                res.setHeader("RefreshTokenError", "Invalid JWT signature.");
+                log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+                throw new IllegalArgumentException("유효하지 않는 JWT 서명 입니다.");
+            }
         } catch (ExpiredJwtException e) {
+            if(type.equals("Access")){
+                res.setHeader("AccessTokenError", "expired AccessToken.");
+            }else {
+                res.setHeader("RefreshTokenError", "expired RefreshToken.");
+            }
             log.error("Expired JWT token, 만료된 JWT token 입니다.");
         } catch (UnsupportedJwtException e) {
+            if(type.equals("Access")){
+                res.setHeader("AccessTokenError", "Unsupported JWT token.");
+            }else {
+                res.setHeader("RefreshTokenError", "Unsupported JWT token.");
+            }
             log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
         } catch (IllegalArgumentException e) {
+            if(type.equals("Access")){
+                res.setHeader("AccessTokenError", "JWT claims is empty.");
+            }else {
+                res.setHeader("RefreshTokenError", "JWT claims is empty.");
+            }
             log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
         }
         return false;
     }
-    public Boolean refreshTokenValidation(String token) {
+    public Boolean refreshTokenValidation(String token, HttpServletResponse res, String type) {
         // 1차 토큰 검증
-        if(!validateToken(token)) return false;
+        if(!validateToken(token, res, type))
+            return false;
         String email = getUserInfoFromToken(token).getSubject();
         // DB에 저장한 토큰 비교
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByEmail(email);

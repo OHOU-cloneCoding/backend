@@ -37,22 +37,20 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String refreshToken = jwtUtil.getJwtFromHeader(req, "Refresh");
 
         if(accessToken!= null){
-            if(jwtUtil.validateToken(accessToken)){
+            String type = "Access";
+            if(jwtUtil.validateToken(accessToken, res, type)){
                 setAuthentication(jwtUtil.getEmailFromToken(accessToken));
             }else if(refreshToken != null){
-                boolean isRefreshToken = jwtUtil.refreshTokenValidation(refreshToken);
+                type = "Refresh";
+                    boolean isRefreshToken = jwtUtil.refreshTokenValidation(refreshToken, res, type);
                 if(isRefreshToken){
                     String email = jwtUtil.getEmailFromToken(refreshToken);
                     User user =  userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("잘못된 이메일입니다."));
                     String newAccessToken = jwtUtil.createToken(email, user.getRole() , "Access");
-                    System.out.println("newAccessToken = " + newAccessToken);
-                    // 여기 아래 set header 원래 이름 Access_Token였음 참고바람
                     res.setHeader("Access", newAccessToken);
                     Claims info = jwtUtil.getUserInfoFromToken(newAccessToken.substring(7));
-                    System.out.println("info.getSubject() = " + info.getSubject());
                     setAuthentication(info.getSubject());
                 } else{
-                    System.out.println(1);
                     throw new IllegalArgumentException("잘못된 토큰입니다");
                 }
             }
