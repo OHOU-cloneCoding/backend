@@ -59,7 +59,7 @@ public class JwtUtil {
     public String createToken(String email, UserRoleEnum role, String type) {
         Date date = new Date();
 
-        long time = type.equals("Access") ? 60 * 1000L :  60 * 3 * 1000L;
+        long time = type.equals("Access") ? 60000 * 1000L :  60000 * 300 * 1000L;
 
         return BEARER_PREFIX +
                 Jwts.builder()
