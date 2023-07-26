@@ -91,33 +91,33 @@ public class JwtUtil {
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
             if(type.equals("Access")){
-                res.setHeader("AccessTokenError", "Invalid JWT signature.");
+                res.setHeader("Accesstokenerror", "Invalid JWT signature.");
                 log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
                 throw new IllegalArgumentException("유효하지 않는 JWT 서명 입니다.");
             }else {
-                res.setHeader("RefreshTokenError", "Invalid JWT signature.");
+                res.setHeader("Refreshtokenerror", "Invalid JWT signature.");
                 log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
                 throw new IllegalArgumentException("유효하지 않는 JWT 서명 입니다.");
             }
         } catch (ExpiredJwtException e) {
             if(type.equals("Access")){
-                res.setHeader("AccessTokenError", "expired AccessToken.");
+                res.setHeader("Accesstokenerror", "expired AccessToken.");
             }else {
-                res.setHeader("RefreshTokenError", "expired RefreshToken.");
+                res.setHeader("Refreshtokenerror", "expired RefreshToken.");
             }
             log.error("Expired JWT token, 만료된 JWT token 입니다.");
         } catch (UnsupportedJwtException e) {
             if(type.equals("Access")){
-                res.setHeader("AccessTokenError", "Unsupported JWT token.");
+                res.setHeader("Accesstokenerror", "Unsupported JWT token.");
             }else {
-                res.setHeader("RefreshTokenError", "Unsupported JWT token.");
+                res.setHeader("Refreshtokenerror", "Unsupported JWT token.");
             }
             log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
         } catch (IllegalArgumentException e) {
             if(type.equals("Access")){
-                res.setHeader("AccessTokenError", "JWT claims is empty.");
+                res.setHeader("Accesstokenerror", "JWT claims is empty.");
             }else {
-                res.setHeader("RefreshTokenError", "JWT claims is empty.");
+                res.setHeader("Refreshtokenerror", "JWT claims is empty.");
             }
             log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
         }
