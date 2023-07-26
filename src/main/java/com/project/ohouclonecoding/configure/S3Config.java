@@ -1,4 +1,4 @@
-package com.project.ohouclonecoding.config;
+package com.project.ohouclonecoding.configure;
 
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;

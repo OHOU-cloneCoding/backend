@@ -1,6 +1,5 @@
 package com.project.ohouclonecoding.entity;
 
-import com.project.ohouclonecoding.dto.post.PostRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

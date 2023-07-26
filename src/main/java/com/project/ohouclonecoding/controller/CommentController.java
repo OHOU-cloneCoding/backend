@@ -2,11 +2,9 @@ package com.project.ohouclonecoding.controller;
 
 import com.project.ohouclonecoding.dto.MessageResponseDto;
 import com.project.ohouclonecoding.dto.comment.CommentRequestDto;
-import com.project.ohouclonecoding.dto.comment.CommentResponseDto;
 import com.project.ohouclonecoding.entity.User;
 import com.project.ohouclonecoding.security.UserDetailsImpl;
 import com.project.ohouclonecoding.service.CommentService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

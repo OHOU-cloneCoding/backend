@@ -11,7 +11,6 @@ import com.project.ohouclonecoding.jwt.JwtUtil;
 import com.project.ohouclonecoding.repository.RefreshTokenRepository;
 import com.project.ohouclonecoding.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.antlr.v4.runtime.Token;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

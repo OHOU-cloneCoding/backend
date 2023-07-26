@@ -1,7 +1,6 @@
 package com.project.ohouclonecoding.service;
 
 import com.project.ohouclonecoding.dto.CrawlingDto;
-import com.project.ohouclonecoding.dto.ItemResponseDto;
 import com.project.ohouclonecoding.entity.Item;
 import com.project.ohouclonecoding.repository.Item.ItemRepository;
 import lombok.RequiredArgsConstructor;

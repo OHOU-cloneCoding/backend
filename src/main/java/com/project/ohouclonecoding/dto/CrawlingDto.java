@@ -1,6 +1,5 @@
 package com.project.ohouclonecoding.dto;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

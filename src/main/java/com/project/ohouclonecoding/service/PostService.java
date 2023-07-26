@@ -10,7 +10,6 @@ import com.project.ohouclonecoding.entity.User;
 import com.project.ohouclonecoding.repository.CommentLikeRepository;
 import com.project.ohouclonecoding.repository.PostLikeRepository;
 import com.project.ohouclonecoding.repository.post.PostRepository;
-import com.project.ohouclonecoding.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.OptimisticLockingFailureException;

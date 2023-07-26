@@ -4,7 +4,6 @@ import com.project.ohouclonecoding.entity.User;
 import com.project.ohouclonecoding.jwt.JwtUtil;
 import com.project.ohouclonecoding.repository.UserRepository;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

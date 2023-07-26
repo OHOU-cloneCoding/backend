@@ -1,7 +1,6 @@
 package com.project.ohouclonecoding.configure;
 
 import com.project.ohouclonecoding.jwt.JwtUtil;
-import com.project.ohouclonecoding.repository.RefreshTokenRepository;
 import com.project.ohouclonecoding.repository.UserRepository;
 import com.project.ohouclonecoding.security.JwtAuthorizationFilter;
 import com.project.ohouclonecoding.security.UserDetailsServiceImpl;
@@ -12,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;

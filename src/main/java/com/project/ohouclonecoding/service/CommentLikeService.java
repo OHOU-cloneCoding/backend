@@ -2,11 +2,9 @@ package com.project.ohouclonecoding.service;
 
 import com.project.ohouclonecoding.entity.Comment;
 import com.project.ohouclonecoding.entity.CommentLike;
-import com.project.ohouclonecoding.entity.Post;
 import com.project.ohouclonecoding.entity.User;
 import com.project.ohouclonecoding.repository.CommentLikeRepository;
 import com.project.ohouclonecoding.repository.CommentRepository;
-import com.project.ohouclonecoding.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
