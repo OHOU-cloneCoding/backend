@@ -1,5 +1,6 @@
 package com.project.ohouclonecoding.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.ohouclonecoding.dto.TokenDto;
 import com.project.ohouclonecoding.entity.RefreshToken;
 import com.project.ohouclonecoding.entity.UserRoleEnum;
@@ -12,9 +13,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -56,7 +59,7 @@ public class JwtUtil {
     public String createToken(String email, UserRoleEnum role, String type) {
         Date date = new Date();
 
-        long time = type.equals("Access") ? 60 * 1000L : 60 * 3 * 1000L;
+        long time = type.equals("Access") ? 60 * 1000L :  60 * 3 * 1000L;
 
         return BEARER_PREFIX +
                 Jwts.builder()
@@ -102,14 +105,33 @@ public class JwtUtil {
         } catch (ExpiredJwtException e) {
             if(type.equals("Access")){
                 res.setHeader("Accesstokenerror", "expired AccessToken.");
+//                String a = "{\n \"msg\" : \"Expired AccesToken\"}";
+//                try {
+//                    ObjectMapper objectMapper = new ObjectMapper();
+//                    objectMapper.writeValueAsString(a);
+//                    res.setContentType(MediaType.APPLICATION_JSON_VALUE);
+//                    res.getWriter().print(a);
+//                } catch (IOException ex) {
+//                    throw new RuntimeException(ex);
+//                }
             }else {
+//                String b = "{\n \"msg\" : \"Expired RefreshToken\"}";
+//                try {
+//                    ObjectMapper objectMapper = new ObjectMapper();
+//                    objectMapper.writeValueAsString(b);
+//                    res.setContentType(MediaType.APPLICATION_JSON_VALUE);
+//                    res.getWriter().print(b);
+//                } catch (IOException ex) {
+//                    throw new RuntimeException(ex);
+//                }
                 res.setHeader("Refreshtokenerror", "expired RefreshToken.");
             }
             log.error("Expired JWT token, 만료된 JWT token 입니다.");
         } catch (UnsupportedJwtException e) {
             if(type.equals("Access")){
                 res.setHeader("Accesstokenerror", "Unsupported JWT token.");
-            }else {
+            }
+            else {
                 res.setHeader("Refreshtokenerror", "Unsupported JWT token.");
             }
             log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
