@@ -1,16 +1,11 @@
 package com.project.ohouclonecoding.dto.post;
 
-import com.project.ohouclonecoding.dto.comment.CommentResponseDto;
-import com.project.ohouclonecoding.entity.Comment;
 import com.project.ohouclonecoding.entity.Post;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
