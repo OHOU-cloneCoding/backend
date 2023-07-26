@@ -10,6 +10,7 @@ import com.project.ohouclonecoding.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,7 +36,7 @@ public class ItemController {
 
 
     @GetMapping("/items/home")
-    public Page<ItemResponseDto> getItems(Pageable pageable) {
+    public Page<ItemResponseDto> getItems(@PageableDefault(size = 8) Pageable pageable) {
         return itemService.getItems(pageable);
     }
 

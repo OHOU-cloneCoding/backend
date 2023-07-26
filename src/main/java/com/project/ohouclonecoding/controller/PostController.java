@@ -12,6 +12,8 @@ import com.project.ohouclonecoding.security.UserDetailsImpl;
 import com.project.ohouclonecoding.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -44,8 +46,8 @@ public class PostController {
 
     //게시글 전체 조회(home - 페이징 8개)
     @GetMapping("/home")
-    public List<AllPostResponseDto> getHomePost(){
-        return postService.getHomePost();
+    public Page<AllPostResponseDto> getHomePost(@PageableDefault(size = 8)Pageable pageable){
+        return postService.getHomePost(pageable);
     }
 
     //게시글 전체 조회(집사진)
@@ -55,10 +57,11 @@ public class PostController {
     }
 
     //게시글 상세 조회
-    @GetMapping("/{postId}")
+    @GetMapping("/detail/{postId}")
     public OnePostResponseDto getOnePost(@PathVariable("postId") Long postId,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails){
         User user = userDetails.getUser();
+        System.out.println("user = " + user);
         return postService.getOnePost(postId, user);
     }
 
