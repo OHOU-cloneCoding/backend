@@ -6,6 +6,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 @Getter
 public class OnePostCommentResponseDto {
+    private Long commentId;
     private String nickname; // 작성자 이름
     private String comment; // 댓글 내용
     private long commentLikeSize;
@@ -15,6 +16,7 @@ public class OnePostCommentResponseDto {
 
 
     public OnePostCommentResponseDto(Comment newComment, boolean hasCommentLiked, boolean isAuth) {
+        this.commentId = newComment.getCommentId();
         this.nickname = newComment.getUser().getNickname();
         this.comment = newComment.getComment();
         this.commentLikeSize = newComment.getCommentLikes().size();

@@ -34,7 +34,7 @@ public class ItemController {
     }
 
 
-    @GetMapping("/home/items")
+    @GetMapping("/items/home")
     public Page<ItemResponseDto> getItems(Pageable pageable) {
         return itemService.getItems(pageable);
     }

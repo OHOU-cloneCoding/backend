@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 public class CommentResponseDto {
+    private Long commentId;
     private String nickname; // 작성자 이름
     private String comment; // 댓글 내용
     private long commentLikeSize;
@@ -14,6 +15,7 @@ public class CommentResponseDto {
 
 
     public CommentResponseDto(Comment newComment) {
+        this.commentId = newComment.getCommentId();
         this.nickname = newComment.getUser().getNickname();
         this.comment = newComment.getComment();
         this.commentLikeSize = newComment.getCommentLikes().size();
