@@ -21,9 +21,10 @@ public class OnePostResponseDto {
     private int commentSize;
     private boolean hasLiked;   // 지금 글을 조회하고 있는 사용자가 본인이 좋아요를 눌렀는지 확인
     private long postViewCount;
+    private boolean postOwner;
 
 
-    public OnePostResponseDto(Post post, boolean hasLikedPost, List<OnePostCommentResponseDto> commentResponseDtoList) {
+    public OnePostResponseDto(Post post, boolean hasLikedPost, List<OnePostCommentResponseDto> commentResponseDtoList, boolean postOwner) {
         this.postId = post.getPostId();
         this.nickname = post.getNickname();
         this.content = post.getContent();
@@ -34,6 +35,7 @@ public class OnePostResponseDto {
         this.commentSize = post.getCommentList().size();
         this.hasLiked = hasLikedPost;
         this.postViewCount = post.getPostViewCount();
+        this.postOwner = postOwner;
     }
 
 }
