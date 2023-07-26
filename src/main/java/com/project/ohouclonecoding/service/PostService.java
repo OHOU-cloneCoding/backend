@@ -14,6 +14,8 @@ import com.project.ohouclonecoding.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,8 +52,8 @@ public class PostService {
     }
 
     //게시글 전체조회(Home - 페이징 8개)
-    public List<AllPostResponseDto> getHomePost() {
-        return postRepository.findAll().stream().map(AllPostResponseDto::new).toList();
+    public Page<AllPostResponseDto> getHomePost(Pageable pageable) {
+        return postRepository.findAllByOrderByModifiedAtDesc(pageable).map(AllPostResponseDto::new);
     }
 
 
