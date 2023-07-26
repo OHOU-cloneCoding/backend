@@ -20,7 +20,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/**").allowCredentials(true)
                 .allowedHeaders("*")
                 .allowedOrigins("http://localhost:3000")
-                .exposedHeaders("Access", "Refresh", "AccessTokenError", "RefreshTokenError")
+                .exposedHeaders("Access", "Refresh", "Accesstokenerror", "Refreshtokenerror")
                 .allowedMethods("OPTIONS", "GET", "POST", "PUT", "DELETE")
                 .maxAge(3000);
     }
