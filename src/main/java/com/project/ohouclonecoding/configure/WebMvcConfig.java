@@ -19,7 +19,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**").allowCredentials(true)
                 .allowedHeaders("*")
-                .allowedOrigins("http://localhost:3000", "https://frontend-ebon-xi.vercel.app")
+                .allowedOrigins("http://localhost:3000", "https://ohou-clone-fe.vercel.app")
                 .exposedHeaders("Access", "Refresh", "Accesstokenerror", "Refreshtokenerror")
                 .allowedMethods("OPTIONS", "GET", "POST", "PUT", "DELETE")
                 .maxAge(3000);
